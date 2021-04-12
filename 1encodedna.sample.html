@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bind SELECT Element with JSON using JavaScript</title>
+    <style>
+    	* { font: 17px Calibri; }
+    </style>
+</head>
+<body>
+	<h3>
+    	Populated this SELECT Dropdown list with JSON data from an external file.
+    </h3>
+    
+    <select id="sel" onchange="show(this)">
+        <option value="">-- Select --</option>
+    </select>
+
+    <p id="msg"></p>
+</body>
+
+<script>
+    window.onload = populateSelect();
+
+    function populateSelect() {
+
+        // Create XMLHttpRequest object, with GET method.
+        var xhr = new XMLHttpRequest(), 
+            method = 'GET',
+            overrideMimeType = 'application/json',
+			url = 'sample.json';
+            // url = '../../library/sample.json';  
+			// Add the file URL.
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+
+          // Parse JSON data.
+          var birds = JSON.parse(xhr.responseText);
+
+          var ele = document.getElementById('sel');
+          for (var i = 0; i < birds.length; i++) {
+          
+            // Bind data to <select> element.
+            ele.innerHTML = ele.innerHTML +
+              '<option value="' + birds[i].ID + '">' + birds[i].Name + '</option>';
+          }
+        }
+      };
+      xhr.open(method, url, true);
+      xhr.send();
+    }
+
+    function show(ele) {
+        // Get the selected value from <select> element and show it.
+        var msg = document.getElementById('msg');
+        msg.innerHTML = 'Selected Bird: <b>' + ele.options[ele.selectedIndex].text + '</b> </br>' +
+            'ID: <b>' + ele.value + '</b>';
+    }
+</script>
+</html>
